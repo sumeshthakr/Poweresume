@@ -1,0 +1,8 @@
+# Senior Full Stack Engineer
+
+Tech Innovations Inc.
+San Francisco, CA
+
+## Responsibilities
+- Design and develop scalable full-stack web applications
+- Build RESTful APIs and microservices

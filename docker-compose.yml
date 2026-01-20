@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  # Frontend Development Server
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:4000
+    command: npm run dev
+
+  # Optional: LaTeX Compilation Service
+  latex-compiler:
+    image: texlive/texlive:latest
+    ports:
+      - "4001:4001"
+    volumes:
+      - ./latex-temp:/workspace
+    environment:
+      - MAX_COMPILE_TIME=30
+      - MAX_FILE_SIZE=10MB
+    # Security: No network access
+    network_mode: none
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+
+  # Optional: Backend API Server (Future)
+  # backend:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "4000:4000"
+  #   environment:
+  #     - NODE_ENV=development
+  #     - DATABASE_URL=postgresql://user:pass@db:5432/poweresume
+  #     - OPENAI_API_KEY=${OPENAI_API_KEY}
+  #     - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
+  #     - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
+  #   depends_on:
+  #     - db
+
+  # Optional: PostgreSQL Database (Future)
+  # db:
+  #   image: postgres:15-alpine
+  #   ports:
+  #     - "5432:5432"
+  #   environment:
+  #     - POSTGRES_USER=user
+  #     - POSTGRES_PASSWORD=pass
+  #     - POSTGRES_DB=poweresume
+  #   volumes:
+  #     - postgres-data:/var/lib/postgresql/data
+
+  # Optional: Redis Cache (Future)
+  # redis:
+  #   image: redis:7-alpine
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis-data:/data
+
+volumes:
+  postgres-data:
+  redis-data:
